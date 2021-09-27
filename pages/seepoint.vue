@@ -2,15 +2,33 @@
   <div class="body">
     <Header />
     <div class="bigContainer">
-      <p>คะแนนรวมทั้งหมด</p>
-      <div v-for="(item, index) in choice" :key="index"><p>item</p></div>
+      <div class="container">
+        <p class="title">คะแนนช้อยส์ทั้งหมด</p>
+        <b-table
+          head-variant="dark"
+          responsive
+          bordered
+          striped
+          :items="choice[0]"
+        ></b-table>
+      </div>
+
+      <div class="container">
+        <p class="title">คะแนนของแต่ละสาขา</p>
+        <b-table
+          head-variant="dark"
+          responsive
+          bordered
+          striped
+          :items="branch[0]"
+        ></b-table>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import Header from '@/components/header'
-import firebase from 'firebase/app'
-import 'firebase/auth'
+
 export default {
   components: {
     Header,
@@ -21,29 +39,24 @@ export default {
       branch: [],
     }
   },
-  async asyncData(context) {
-
-    await context.app.$axios
+  async mounted() {
+    await this.$axios
       .get('https://serverwebfindbranch.herokuapp.com/choice')
       .then((res) => {
-        console.log(this.choice)
-        // this.choice.push(res.data.data)
+        console.log(JSON.stringify(res.data.data))
+        this.choice.push(res.data.data)
       })
       .catch((err) => {
         console.log(err)
       })
-    await context.app.$axios
+    await this.$axios
       .get('https://serverwebfindbranch.herokuapp.com/branch')
       .then((res) => {
-        console.log(this.branch)
-        // this.branch.push(res.data.data)
+        this.branch.push(res.data.data)
       })
       .catch((err) => {
         console.log(err)
       })
-  },
-  methods: {
-   
   },
 }
 </script>
@@ -56,27 +69,39 @@ html,
   min-height: 100%;
 }
 .bigContainer {
-  justify-content: center;
-  align-items: center;
-  padding: 90px;
+  padding: 40px;
+  display: flex;
+  flex-direction: row;
+}
+.title {
+  font-size: 4vw;
+}
+.container {
+  padding: 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
-
 @media screen and (max-width: 1150px) {
   .bigContainer {
-    background-image: none;
+    padding: 40px;
+    width: 80%;
+    flex-direction: column;
+    margin-left: 10%;
+  }
+  .title {
+    font-size: 5vw;
   }
 }
 @media screen and (max-width: 716px) {
   .bigContainer {
-    padding: 7vw;
+    margin-top: 5%;
+    width: 100%;
+    padding: 0px;
+    margin-left: 0%;
   }
-}
-@media screen and (max-width: 414px) {
-  .bigContainer {
-    padding: 7vw;
-    margin-top: 15%;
+  .title {
+    font-size: 6vw;
   }
 }
 </style>
