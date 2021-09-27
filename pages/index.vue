@@ -6,23 +6,31 @@
       <p class="title">ผู้ดูแลระบบ</p>
 
       <div class="container">
-        <div class="rowInput">
-          <label class="email">Email</label>
-          <b-form-input class="input"></b-form-input>
-        </div>
-        <div class="rowInput">
-          <label class="password">Password</label>
-          <b-form-input class="input" type="password"></b-form-input>
-        </div>
-        <div class="boxLogin">
-          <b-button>Login</b-button>
-        </div>
+        <form @submit.prevent="login()" class="form">
+          <div class="rowInput">
+            <label class="email">Email</label>
+            <b-form-input v-model="email" class="input"></b-form-input>
+          </div>
+          <div class="rowInput">
+            <label class="password">Password</label>
+            <b-form-input
+              v-model="password"
+              class="input"
+              type="password"
+            ></b-form-input>
+          </div>
+          <div class="boxLogin">
+            <b-button type="submit">Login</b-button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 <script>
 import Header from '@/components/header'
+import firebase from 'firebase/app'
+import 'firebase/auth'
 export default {
   components: {
     Header,
@@ -33,6 +41,26 @@ export default {
       password: '',
     }
   },
+  methods: {
+    login() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.$router.push('/seepoint')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+  },
+  mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.$router.push('/seepoint')
+      }
+    })
+  },
 }
 </script>
 <style scoped>
@@ -42,6 +70,13 @@ export default {
 html,
 .body {
   min-height: 100%;
+}
+.form {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 .email {
   margin-bottom: 0px;
@@ -54,10 +89,6 @@ html,
   margin-right: 10%;
 }
 .container {
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
   width: 50%;
   margin-top: 2%;
 }
@@ -139,14 +170,40 @@ input {
 @media screen and (max-width: 716px) {
   .bigContainer {
     padding: 7vw;
-    margin-top: 6vh;
   }
   .btn-secondary {
     font-size: 4vw;
-    padding: 2vw;
+    padding: 1vw;
   }
   .btn-link {
     width: 50%;
+  }
+}
+@media screen and (max-width: 414px) {
+  .bigContainer {
+    padding: 7vw;
+    margin-top: 15%;
+  }
+  .btn-secondary {
+    font-size: 4vw;
+    padding: 1vw;
+  }
+  .btn-link {
+    width: 50%;
+  }
+  .container {
+    width: 90%;
+  }
+  .email {
+    font-size: 3.5vw;
+    margin-right: 18%;
+  }
+  .password {
+    font-size: 3.5vw;
+    margin-right: 10%;
+  }
+  input {
+    font-size: 3.5vw;
   }
 }
 </style>
