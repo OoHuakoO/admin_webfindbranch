@@ -28,7 +28,8 @@
 </template>
 <script>
 import Header from '@/components/header'
-
+import firebase from 'firebase/app'
+import 'firebase/auth'
 export default {
   components: {
     Header,
@@ -40,6 +41,11 @@ export default {
     }
   },
   async mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        this.$router.push('/')
+      }
+    })
     await this.$axios
       .get('https://serverwebfindbranch.herokuapp.com/choice')
       .then((res) => {
