@@ -47,7 +47,7 @@ export default {
       }
     })
     await this.$axios
-      .get('https://serverwebfindbranch.herokuapp.com/choice')
+      .get('https://webfindbranchserver.onrender.com/choice')
       .then((res) => {
         console.log(JSON.stringify(res.data.data))
         this.choice.push(res.data.data)
@@ -56,7 +56,7 @@ export default {
         console.log(err)
       })
     await this.$axios
-      .get('https://serverwebfindbranch.herokuapp.com/branch')
+      .get('https://webfindbranchserver.onrender.com/branch')
       .then((res) => {
         this.branch.push(res.data.data)
       })
